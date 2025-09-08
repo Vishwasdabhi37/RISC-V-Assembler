@@ -3,7 +3,7 @@ using namespace std;
 
 /*
 
-Registers ---------done
+Registers
 Instructions
 R_type
 I_type_arithmetic
@@ -12,98 +12,141 @@ B_type
 S_type
 J_type
 JR_type
+
 */
 
+class Register
+{
+    map<string, string> reg_to_binary;
+    string reg_name, reg_binary;
 
-
-Class Registers{
-    map<string,string> reg_to_binary;
-    string reg_name,reg_binary;
-    public:
-    Registers(string reg_name); // done
-    string get_reg_name(); // done
-    string get_reg_binary(); // done
+public:
+    Register();
+    Register(string reg_name); // done
+    string get_reg_name();     // done
+    string get_reg_binary();   // done
 };
-Class Instructions{
+class Instructions
+{
+protected:
     string inst;
-    map<string,string> opname_to_type;
-    public:
+    string inst_type;
+    string opname;
+
+public:
     Instructions();
-    virtual string get_binary() = 0; // this is the final ans (instruction into binary)
-    virtual string initialize() = 0; // this will process the string inst, and assign the corrosponding values to attributes
+    Instructions(string inst);
+    string get_inst_type();
+    virtual string get_binary() = 0;
+    virtual void initialize() = 0;
 };
-Class R_type : public Instructions{
+class R_type : public Instructions
+{
     string opcode;
-    Register dest,src1,src2;
-    string func3_bin,func7_bin;
-    string func3(string ins);
-    string func7(string ins);
-    public:
-    R_type(string inst); // I will set opcode here
+    Register *dest, *src1, *src2;
+    string func3_bin, func7_bin;
+
+public:
+    void func3(); 
+    void func7(); 
+    R_type();
+    R_type(string inst);         
     string get_binary() override;
-    string initialize() override;
+    void initialize() override;  
 };
-Class I_type_arithmetic : public Instructions{
+class I_type_arithmetic : public Instructions
+{
     string opcode;
-    Register dest,src;
-    string func3_bin, immediate20_bin;
-    string func3(string ins);
-    string immediate20(string ins);
-    public:
-    I_type(string inst);
-    string get_binary() override;
-    string initialize() override;
-};
-Class I_type_shift : public Instructions{
-    string opcode;
-    Register dest,src;
-    string func3_bin, immediate5_bin,immediate7_bin;
-    string func3(string ins);
-    string immediate5(string ins);
-    string immediate7(string ins);
-    public:
-    I_type(string inst);
-    string get_binary() override;
-    string initialize() override;
-};
-class B_type : public Instructions{
-    string opcode;
-    Register src1,src2;
-    string func3_bin,immediate5_bin,immediate7_bin; // in BNE we will take offset as an int instead of string
-    string func3(string ins);
-    string immediate5(string ins);
-    string immediate7(string ins);
-    public:
-    string get_binary() override;
-    string initialize() override;
-};
-class S_type : public Instructions{
-    string opcode;
-    Register src,data;
-    string func3_bin,immediate5_bin,immediate7_bin;
-    string func3(string ins);
-    string immediate5_bin(string ins);
-    string immediate7_bin(string ins);
-    public:
-    string get_binary() override;
-    string initialize() override;
-};
-Class J_type : public Instructions{
-    string opcode;
-    Register dest;
-    string immediate20_bin;
-    string immediate20(string ins);
-    public:
-    string get_binary() override;
-    string initialize() override;
-};
-Class JR_type : public Instructions{
-    string opcode;
-    Register base,dest;
+    Register *dest, *src;
     string func3_bin, immediate12_bin;
-    string func3(string ins);
-    string immediate12(string ins);
-    public:
+    void func3();       
+    void immediate12(); 
+public:
+    I_type_arithmetic();            
+    I_type_arithmetic(string inst); 
+    string get_binary() override;   
+    void initialize() override;     
+};
+class I_type_shift : public Instructions
+{
+    string opcode;
+    Register *dest, *src;
+    string func3_bin, immediate5_bin, immediate7_bin;
+    void func3();      
+    void immediate5(); 
+    void immediate7(); 
+public:
+    I_type_shift();              
+    I_type_shift(string inst);   
     string get_binary() override;
-    string initialize() override;
+    void initialize() override;  
+};
+class B_type : public Instructions
+{
+    string opcode;
+    Register *src1, *src2;
+    string func3_bin, immediate5_bin, immediate7_bin;
+    void func3();
+    void immediates();
+
+public:
+    B_type();
+    B_type(string inst);
+    string get_binary() override;
+    void initialize() override;
+};
+class S_type : public Instructions
+{
+    string opcode;
+    Register *src, *data;
+    string func3_bin, immediate5_bin, immediate7_bin;
+    void func3();
+    void immediates();
+
+public:
+    S_type();
+    S_type(string inst);
+    string get_binary() override;
+    void initialize() override;
+};
+class J_type : public Instructions
+{
+    string opcode;
+    Register *dest;
+    string immediate20_bin;
+    void immediate20();
+
+public:
+    J_type();
+    J_type(string inst);
+    string get_binary() override;
+    void initialize() override;
+};
+class JR_type : public Instructions
+{
+    string opcode;
+    Register *base, *dest;
+    string func3_bin, immediate12_bin;
+    void func3();
+    void immediate12();
+
+public:
+    JR_type();
+    JR_type(string inst);
+    string get_binary() override;
+    void initialize() override;
+};
+class L_type : public Instructions
+{
+    string opcode;
+    Register *src, *dest;
+    string func3_bin, immediate12_bin;
+    void func3();
+    void immediate12();
+
+public:
+    L_type();
+    L_type(string inst);
+    string get_binary() override;
+    void initialize() override;
 };
