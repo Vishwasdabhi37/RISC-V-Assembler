@@ -123,7 +123,7 @@ string ALUControl(string ALUOp, string func7, string func3){
         }
         else{
             if(func3 == "001"){
-                return 1000;
+                return "1000";
             }
             if(func3 == "000"){
                 return "0010";
@@ -171,7 +171,7 @@ int getimm(string ins){
         return signedExtend(ins.substr(0,12));
     }
     if(opcode == ""){
-        string str = ""
+        string str = "";
         str += ins[0];
         str += ins.substr(12,8);
         str += ins[11];
@@ -181,11 +181,12 @@ int getimm(string ins){
     if(opcode == "" || opcode == ""){
         return signedExtend(ins.substr(0,7) + ins.substr(20,5));
     }
+    return 0;
 }
-int getGPR(string s){
+int get_GPR(string s){
     int num = 0;
     reverse(s.begin(),s.end());
-    for(int i = 0;i < s.size();i++){
+    for(int i = 0;i  < s.size();i++){
         if(s[i] == '1'){
             num += (1 << i);
         }
@@ -220,7 +221,7 @@ int ALU(string ALUSelect,int alusrc1,int alusrc2){
         return alusrc1 * alusrc2;
     }
     if(ALUSelect == "0101"){
-        return alusrc1 % alursrc2;
+        return alusrc1 % alusrc2;
     }
     if(ALUSelect == "0110"){
         return alusrc1 - alusrc2;
@@ -232,7 +233,7 @@ int ALU(string ALUSelect,int alusrc1,int alusrc2){
         if(alusrc2 > 30)return 0;
         return (alusrc1 << alusrc2);
     }
-    return ans;
+    return 0;
 }
 
 int outputselect(int mem2reg, int jump,int ALUResult,int LDResult, int NPC){
@@ -241,7 +242,14 @@ int outputselect(int mem2reg, int jump,int ALUResult,int LDResult, int NPC){
     return ALUResult;
 }
 int main(){
-    freopen("output.txt","r",stdin);
+    freopen("Output_file.txt","r",stdin);
+    for(int i = 0;i < 32;i++){
+        GPR[i] = i;
+    }
+    for(auto && it : GPR){
+            cout << it << ' ';
+        }
+        cout << endl;
     vector<string> ins_v;
     string str;
     while(getline(cin,str)){
@@ -249,6 +257,7 @@ int main(){
     }
     int sz = ins_v.size();
     int PC = 0;
+    int cnt = 0;
     while(PC < sz){
         string ins = ins_v[PC];
         int NPC = PC + 1;
@@ -265,7 +274,7 @@ int main(){
         if(CW->regRead) rs1 = get_GPR(rsl1);
         int rs2 = 0;
         if(CW->regRead) rs2 = get_GPR(rsl2);
-        int alrsrc2 = 0;
+        int alusrc2 = 0;
         if(CW->ALUSrc) alusrc2 = imm;
         else alusrc2 = rs2;
         int alusrc1 = rs1;
@@ -282,6 +291,11 @@ int main(){
         if(CW->memWrite) DM[ALUResult] = rs2;
         if(CW->regWrite) setGPR(rdl, outputselect(CW->mem2reg,CW->Jump, ALUResult, LDResult, NPC));
         PC = TPC;
+        cout << "INS : " << cnt++ << ' ';
+        for(auto && it : GPR){
+            cout << it << ' ';
+        }
+        cout << endl;
     }
     return 0;
 }
