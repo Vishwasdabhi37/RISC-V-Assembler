@@ -1,0 +1,13 @@
+add x1, x8, x0    // x1 = base address
+lw x2, 0(x1)      // x2 = n
+add x3, x0, x0    // x3 = i = 0
+add x4, x0, x0    // x4 = ans = 0
+addi x1, x1, 1    // x1++;
+loop:
+bge x3, x2, end  // if i >= n,break
+lw x5, 0(x1)      // x5 = arr[i]
+add x4, x4, x5    // ans += arr[i]
+addi x1, x1, 1    // x1++
+addi x3, x3, 1    // i++
+j loop
+end:
